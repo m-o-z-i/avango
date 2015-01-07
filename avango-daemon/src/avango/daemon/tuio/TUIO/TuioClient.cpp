@@ -289,7 +289,6 @@ void TuioClient::ProcessMessage( const ReceivedMessage& msg, const IpEndpointNam
 		} else if( strcmp( msg.AddressPattern(), "/tuio/2Dcur" ) == 0 ) {
 			const char* cmd;
 			args >> cmd;
-			
 			if (strcmp(cmd,"set")==0) {	
 
 				int32 s_id;
@@ -373,7 +372,7 @@ void TuioClient::ProcessMessage( const ReceivedMessage& msg, const IpEndpointNam
                             for (std::list<TuioListener*>::iterator listener=listenerList.begin(); listener != listenerList.end(); listener++){
                                 (*listener)->removeTuioHand(hand);
 
-                                std::cout << "delete hand " << hand->getHandID() << std::endl;
+                                //std::cout << "AVANGO: delete hand " << hand->getHandID() << std::endl;
                             }
                         }
                         return iter == aliveHandList.end();
@@ -528,9 +527,9 @@ void TuioClient::ProcessMessage( const ReceivedMessage& msg, const IpEndpointNam
 				frameCursors.clear();
 			}
         } else if ( strcmp( msg.AddressPattern(), "/tuiox/finger" ) == 0 ) {
-            int32 s_id;
-            float xpos, ypos, xspeed, yspeed, xellipse,yellipse, minoraxis, majoraxis, incl;
-            args >> s_id >> xpos >> ypos >> xspeed >> yspeed >> xellipse >> yellipse >> minoraxis >> majoraxis >> incl;
+            int32 s_id, type;
+            float xpos, ypos, xspeed, yspeed, acceleration;
+            args >> s_id >> xpos >> ypos >> xspeed >> yspeed >> acceleration >> type;
 
             lockFingerList();
             std::list<TuioFinger*>::iterator tfinger;
@@ -541,15 +540,14 @@ void TuioClient::ProcessMessage( const ReceivedMessage& msg, const IpEndpointNam
             if ( tfinger == fingerList.end()) {
                 TuioFinger* addFinger = new TuioFinger(
                                             (long)s_id,
-                                            xpos, ypos,
-                                            xspeed, yspeed,
-                                            xellipse, yellipse,
-                                            minoraxis, majoraxis,
-                                            incl
+                                            (float)xpos, (float)ypos,
+                                            (float)xspeed, (float)yspeed,
+                                            (float)acceleration,
+                                            (TuioFinger::Type)type
                 );
                 fingerList.push_back(addFinger);
             } else {
-                (*tfinger)->update(xpos, ypos, xspeed, yspeed, xellipse, yellipse, minoraxis, majoraxis, incl);
+                (*tfinger)->update((float)xpos, (float)ypos, (float)xspeed, (float)yspeed, (float)acceleration , (TuioFinger::Type)type);
             }
 
             unlockFingerList();
@@ -561,7 +559,7 @@ void TuioClient::ProcessMessage( const ReceivedMessage& msg, const IpEndpointNam
                 aliveHandList.clear();
                 while(!args.Eos()) {
                     args >> s_id;
-                    std::cout<< "alive handID: " << s_id << std::endl;
+                    std::cout<< "AVANGO:  alive handID: " << s_id << std::endl;
 
                     aliveHandList.push_back((long)s_id);
                 }
@@ -570,9 +568,13 @@ void TuioClient::ProcessMessage( const ReceivedMessage& msg, const IpEndpointNam
             } else if (strcmp(cmd,"set")==0){
 
                 int32 s_id, hand_class, f1, f2, f3, f4, f5;
-                args >> s_id >> hand_class >> f1 >> f2 >> f3 >> f4 >> f5;
+                float xPos, yPos, arm_x, arm_y, arm_minor, arm_major, arm_incl, bBox_minX, bBox_minY, bBox_maxX, bBox_maxY;
+                args >> s_id >> xPos >> yPos >> f1 >> f2 >> f3 >> f4 >> f5 >>
+                        bBox_minX >> bBox_minY >> bBox_maxX >> bBox_maxY >>
+                        hand_class >>
+                        arm_x >> arm_y >> arm_minor >> arm_major >> arm_incl;
 
-                std::cout<< "Set hand: " << s_id << std::endl;
+                //std::cout<< "AVANGO: Set hand: " << s_id << std::endl;
 
                 lockHandList();
                 std::list<TuioHand*>::iterator thand;
@@ -582,17 +584,24 @@ void TuioClient::ProcessMessage( const ReceivedMessage& msg, const IpEndpointNam
 
                 if ( thand == handList.end()) {
                     TuioHand* addHand = new TuioHand(
-                                                (long)s_id, (TuioHand::Class)hand_class,
-                                                (long)f1, (long)f2, (long)f3, (long)f4, (long)f5
+                                                (long)s_id, (float) xPos, (float) yPos,
+                                                (long) f1, (long) f2, (long) f3, (long) f4, (long) f5,
+                                                (float) bBox_minX, (float) bBox_minY, (float) bBox_maxX, (float) bBox_maxY,
+                                                (TuioHand::Class) hand_class, (float) arm_x, (float) arm_x, (float) arm_minor, (float) arm_major, (float) arm_incl
                     );
                     handList.push_back(addHand);
                     for (std::list<TuioListener*>::iterator listener=listenerList.begin(); listener != listenerList.end(); listener++){
                         (*listener)->addTuioHand(addHand);
+                        std::cout<< "AVANGO: Add hand: " << addHand->getSessionID() << std::endl;
                     }
                 } else {
-                    (*thand)->update((long)f1, (long)f2, (long)f3, (long)f4, (long)f5);
+                    (*thand)->update((float) xPos, (float) yPos,
+                                     (long) f1, (long) f2, (long) f3, (long) f4, (long) f5,
+                                     (float) bBox_minX, (float) bBox_minY, (float) bBox_maxX, (float) bBox_maxY,
+                                     (float) arm_x, (float) arm_x, (float) arm_minor, (float) arm_major, (float) arm_incl);
                     for (std::list<TuioListener*>::iterator listener=listenerList.begin(); listener != listenerList.end(); listener++){
                         (*listener)->updateTuioHand(*thand);
+                        std::cout<< "AVANGO: Update hand: " << (*thand)->getSessionID() << std::endl;
                     }
                 }
 
@@ -601,7 +610,7 @@ void TuioClient::ProcessMessage( const ReceivedMessage& msg, const IpEndpointNam
             unlockHandList();
         }
     } catch( Exception& e ){
-		std::cerr << "error parsing TUIO message: "<< msg.AddressPattern() <<  " - " << e.what() << std::endl;
+        std::cerr << "error parsing TUIO message: "<< msg.AddressPattern() <<  " - " << e.what() << std::endl;
     }
 }
 

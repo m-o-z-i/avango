@@ -49,21 +49,29 @@ namespace av
         };
 
         struct TUIOFinger {
+            int session_id;
             float x;
             float y;
             float x_speed;
             float y_speed;
-            float ellipse_x;
-            float ellipse_y;
-            float ellipse_major;
-            float ellipse_minor;
-            float ellipse_inclination;
-            int session_id;
+            float acceleration;
+            TUIO::TuioFinger::Type type;
         };
 
         struct TUIOHand {
+            float x_pos;
+            float y_pos;
             TUIO::TuioHand::Class hand_class;
+            float bBox_minX;
+            float bBox_minY;
+            float bBox_maxX;
+            float bBox_maxY;
             TUIO::TuioHand::FingerArray fingers;
+            float x_arm_center;
+            float y_arm_center;
+            float arm_minor_axis;
+            float arm_major_axis;
+            float arm_inclination;
             int session_id;
         };
 
@@ -105,14 +113,12 @@ namespace av
 
         void addTuioFinger(TUIO::TuioFinger* tfinger) {
             TUIOFinger& finger = fingers[tfinger->getSessionID()];
-            finger.session_id = tfinger->getSessionID();
-            finger.x = tfinger->getX();
-            finger.y = tfinger->getY();
-            finger.ellipse_x = tfinger->getEllipseX();
-            finger.ellipse_y = tfinger->getEllipseY();
-            finger.ellipse_major = tfinger->getEllipseMajor();
-            finger.ellipse_minor = tfinger->getEllipseMinor();
-            finger.ellipse_inclination = tfinger->getEllipseInclination();
+            finger.session_id  = tfinger->getSessionID();
+            finger.x           = tfinger->getX();
+            finger.y           = tfinger->getY();
+            finger.x_speed     = tfinger->getXSpeed();
+            finger.y_speed     = tfinger->getYSpeed();
+            finger.type        = tfinger->getFingerType();
         }
         void updateTuioFinger(TUIO::TuioFinger* tfinger) {
             addTuioFinger(tfinger);
@@ -122,10 +128,22 @@ namespace av
         }
 
         void addTuioHand(TUIO::TuioHand* thand) {
-            TUIOHand& hand = hands[thand->getSessionID()];
-            hand.session_id = thand->getSessionID();
-            hand.hand_class = thand->getHandClass();
-            hand.fingers = thand->getFingerIDs();
+
+            TUIOHand& hand      = hands[thand->getSessionID()];
+            hand.session_id     = thand->getSessionID();
+            hand.hand_class     = thand->getHandClass();
+            hand.fingers        = thand->getFingerIDs();
+            hand.x_pos          = thand->getXPos();
+            hand.y_pos          = thand->getYPos();
+            hand.bBox_minX      = thand->getBoundingBoxMinX();
+            hand.bBox_minY      = thand->getBoundingBoxMinY();
+            hand.bBox_maxX      = thand->getBoundingBoxMaxX();
+            hand.bBox_maxY      = thand->getBoundingBoxMaxY();
+            hand.x_arm_center   = thand->getArmX();
+            hand.y_arm_center   = thand->getArmY();
+            hand.arm_minor_axis = thand->getArmMinor();
+            hand.arm_major_axis = thand->getArmMajor();
+            hand.arm_inclination= thand->getArmInclination();
         }
         void updateTuioHand(TUIO::TuioHand* thand) {
             addTuioHand(thand);

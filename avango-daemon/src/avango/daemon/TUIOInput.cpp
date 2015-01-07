@@ -119,47 +119,77 @@ av::daemon::TUIOInput::readLoop()
             int sessionID = getSessionIDForStation(station, 1, mTUIOInputListener->fingers);
             auto finger(mTUIOInputListener->fingers.find(sessionID));
             if (finger != mTUIOInputListener->fingers.end()) {
-                station.second->setValue(0, finger->second.x);
-                station.second->setValue(1, finger->second.y);
-                station.second->setValue(2, finger->second.x_speed);
-                station.second->setValue(3, finger->second.y_speed);
-                station.second->setValue(4, finger->second.ellipse_x);
-                station.second->setValue(5, finger->second.ellipse_y);
-                station.second->setValue(6, finger->second.ellipse_major);
-                station.second->setValue(7, finger->second.ellipse_minor);
-                station.second->setValue(8, finger->second.ellipse_inclination);
-                station.second->setValue(9, finger->second.session_id);
+                station.second->setValue(0, finger->second.session_id);
+                station.second->setValue(1, finger->second.x);
+                station.second->setValue(2, finger->second.y);
+                station.second->setValue(3, finger->second.x_speed);
+                station.second->setValue(4, finger->second.y_speed);
+                station.second->setValue(5, finger->second.acceleration);
+                station.second->setValue(6, finger->second.type);
+
             } else {
                 station.second->setValue(0, -1.f);
                 station.second->setValue(1, -1.f);
-                station.second->setValue(2, 0.f);
+                station.second->setValue(2, -1.f);
                 station.second->setValue(3, 0.f);
-                station.second->setValue(4, -1.f);
-                station.second->setValue(5, -1.f);
-                station.second->setValue(6, 0.f);
-                station.second->setValue(7, 0.f);
-                station.second->setValue(8, -0.f);
-                station.second->setValue(9, -1.f);
+                station.second->setValue(4, 0.f);
+                station.second->setValue(5, 0.f);
+                station.second->setValue(6, TUIO::TuioFinger::Type::UNKNOWN);
+
             }
         } else if (boost::algorithm::ends_with(name, "#hand")) {
             int sessionID = getSessionIDForStation(station, 2, mTUIOInputListener->hands);
             auto hand(mTUIOInputListener->hands.find(sessionID));
             if (hand != mTUIOInputListener->hands.end()) {
-                station.second->setValue(0, hand->second.hand_class);
-                station.second->setValue(1, hand->second.fingers[0]);
-                station.second->setValue(2, hand->second.fingers[1]);
-                station.second->setValue(3, hand->second.fingers[2]);
-                station.second->setValue(4, hand->second.fingers[3]);
-                station.second->setValue(5, hand->second.fingers[4]);
-                station.second->setValue(6, hand->second.session_id);
+                station.second->setValue(0,  hand->second.session_id);
+                //std::cout << "AVANGO: hand " << hand->second.session_id << "  pos = " << hand->second.x_pos << " arm: " << hand->second.x_arm_center << "  hand_class " << hand->second.hand_class << std::endl;
+
+                station.second->setValue(1,  hand->second.x_pos);
+                station.second->setValue(2,  hand->second.y_pos);
+
+                station.second->setValue(3,  hand->second.fingers[0]);
+                station.second->setValue(4,  hand->second.fingers[1]);
+                station.second->setValue(5,  hand->second.fingers[2]);
+                station.second->setValue(6,  hand->second.fingers[3]);
+                station.second->setValue(7,  hand->second.fingers[4]);
+
+                station.second->setValue(8,   hand->second.bBox_minX);
+                station.second->setValue(9,   hand->second.bBox_minY);
+                station.second->setValue(10,  hand->second.bBox_maxX);
+                station.second->setValue(11,  hand->second.bBox_maxY);
+
+                station.second->setValue(12,  hand->second.hand_class);
+
+                station.second->setValue(13,  hand->second.x_arm_center   );
+                station.second->setValue(14,  hand->second.y_arm_center   );
+                station.second->setValue(15,  hand->second.arm_major_axis );
+                station.second->setValue(16,  hand->second.arm_minor_axis );
+                station.second->setValue(17,  hand->second.arm_inclination);
+
             } else {
-                station.second->setValue(0, TUIO::TuioHand::Class::UNKNOWN);
+                station.second->setValue(0, -1.f);
+
                 station.second->setValue(1, -1.f);
                 station.second->setValue(2, -1.f);
+
                 station.second->setValue(3, -1.f);
                 station.second->setValue(4, -1.f);
                 station.second->setValue(5, -1.f);
                 station.second->setValue(6, -1.f);
+                station.second->setValue(7, -1.f);
+
+                station.second->setValue(8, 0.f);
+                station.second->setValue(9, 0.f);
+                station.second->setValue(10, 0.f);
+                station.second->setValue(11, 0.f);
+
+                station.second->setValue(12, TUIO::TuioHand::Class::UNKNOWN);
+
+                station.second->setValue(13, 0.f);
+                station.second->setValue(14, 0.f);
+                station.second->setValue(15, 0.f);
+                station.second->setValue(16, 0.f);
+                station.second->setValue(17, 0.f);
             }
         }
     }

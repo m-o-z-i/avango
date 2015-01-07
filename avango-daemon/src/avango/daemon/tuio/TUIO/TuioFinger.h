@@ -33,101 +33,88 @@ namespace TUIO {
     /**
      * The TuioFinger class encapsulates /tuio/_Finger TUIO fingers.
      *
-     * @author Janek Bevendorff
+     * @author Janek Bevendorff, Moritz Loos
      * @version 1.4.01
      */
     class TuioFinger: public TuioContainer {
 
     public:
+
+        enum Type { UNKNOWN = 0, THUMB = 1, INDEX = 2, MIDDLE = 3, RING = 4 , LITTLE = 5};
+
+
         /**
-         * This constructor takes a TuioTime argument and assigns it along with the provided
-         * Session ID, Finger ID, X and Y coordinate to the newly created TuioFinger
-         *
-         * @param	ttime	the TuioTime to assign
-         * @param	si	the Session ID  to assign
-         * @param	xp	the X coordinate to assign
-         * @param	yp	the Y coordinate to assign
-         * @param   xv  the X velocity to assign
-         * @param   yv  the Y velocity to assign
-         * @param   xe  the bounding ellipse center X coordinate
-         * @param   ye  the bounding ellipse center Y coordinate
-         * @param   mi  the bounding ellipse minor axis
-         * @param   ma  the bounding ellipse major axis
-         * @param   in  the bounding ellipse inclination
-         */
+        * This constructor takes a TuioTime argument and assigns it along with the provided
+        * Session ID, Finger ID, X and Y coordinate to the newly created TuioFinger
+        *
+        * @param	ttime	the TuioTime to assign
+        * @param	si	the Session ID  to assign
+        * @param	xp	the X coordinate to assign
+        * @param	yp	the Y coordinate to assign
+        * @param    xv  the X velocity to assign
+        * @param    yv  the Y velocity to assign
+        * @param    ac  the acceleration to assign
+        * @param    ft  the finger type to assign (UNKNOWN, THUMB, INDEX, MIDDLE, RING, LITTLE)
+        */
         TuioFinger (TuioTime ttime,
                     long si,
                     float xp, float yp,
                     float xv, float yv,
-                    float xe, float ye,
-                    float mi, float ma,
-                    float in) :
+                    float ac,
+                    Type ft) :
             TuioContainer(ttime,si,xp,yp),
             finger_id(si),
             x_speed(xv), y_speed(yv),
-            x_ellipse_center(xe), y_ellipse_center(ye),
-            ellipse_minor_axis(mi), ellipse_major_axis(ma),
-            ellipse_inclination(in)
+            acceleration(ac),
+            type(ft)
         {
         }
 
         /**
-         * This constructor takes the provided Session ID, Cursor ID, X and Y coordinate
-         * and assigs these values to the newly created TuioCursor.
-         *
-         * @param	si	the Session ID  to assign
-         * @param	xp	the X coordinate to assign
-         * @param	yp	the Y coordinate to assign
-         * @param   xs  the X velocity to assign
-         * @param   ys  the Y velocity to assign
-         * @param   xe  the bounding ellipse center X coordinate
-         * @param   ye  the bounding ellipse center Y coordinate
-         * @param   mi  the bounding ellipse minor axis
-         * @param   ma  the bounding ellipse major axis
-         * @param   in  the bounding ellipse inclination
-         */
+        * This constructor takes the provided Session ID, Cursor ID, X and Y coordinate
+        * and assigs these values to the newly created TuioCursor.
+        *
+        * @param	si	the Session ID  to assign
+        * @param	xp	the X coordinate to assign
+        * @param    yp	the Y coordinate to assign
+        * @param    xv  the X velocity to assign
+        * @param    yv  the Y velocity to assign
+        * @param    ac  the acceleration to assign
+        * @param    ft  the finger type to assign (UNKNOWN, THUMB, INDEX, MIDDLE, RING, LITTLE)
+        */
         TuioFinger (long si,
                     float xp, float yp,
-                    float xs, float ys,
-                    float xe, float ye,
-                    float mi, float ma,
-                    float in) :
+                    float xv, float yv,
+                    float ac,
+                    Type ft) :
             TuioContainer(si,xp,yp),
             finger_id(si),
-            x_speed(xs), y_speed(ys),
-            x_ellipse_center(xe), y_ellipse_center(ye),
-            ellipse_minor_axis(mi), ellipse_major_axis(ma),
-            ellipse_inclination(in)
+            x_speed(xv), y_speed(yv),
+            acceleration(ac),
+            type(ft)
         {
         }
 
         /**
-          * Update finger and corresponding 2DCursors.
-          *
-          * @param  xp	the X coordinate to assign
-          * @param  yp	the Y coordinate to assign
-          * @param  xs  the X velocity to assign
-          * @param  ys  the Y velocity to assign
-          * @param  xe  the bounding ellipse center X coordinate
-          * @param  ye  the bounding ellipse center Y coordinate
-          * @param  mi  the bounding ellipse minor axis
-          * @param  ma  the bounding ellipse major axis
-          * @param  in  the bounding ellipse inclination
-          */
+        * Update finger and corresponding 2DCursors.
+        *
+        * @param   xp  the X coordinate to assign
+        * @param   yp  the Y coordinate to assign
+        * @param   xv  the X velocity to assign
+        * @param   yv  the Y velocity to assign
+        * @param   ac  the acceleration to assign
+        * @param   ft  the finger type to assign (UNKNOWN, THUMB, INDEX, MIDDLE, RING, LITTLE)
+        */
         void update(float xp, float yp,
-                    float xs, float ys,
-                    float xe, float ye,
-                    float mi, float ma,
-                    float in)
+                    float xv, float yv,
+                    float ac,
+                    Type ft)
         {
             TuioContainer::update(TuioTime::getSessionTime(), xp, yp);
-            x_speed = xs;
-            y_speed = ys;
-            x_ellipse_center = xe;
-            y_ellipse_center = ye;
-            ellipse_minor_axis = mi;
-            ellipse_major_axis = ma;
-            ellipse_inclination = in;
+            x_speed = xv;
+            y_speed = yv;
+            acceleration = ac;
+            type = ft;
         }
 
         /**
@@ -155,45 +142,20 @@ namespace TUIO {
         }
 
         /**
-          * Return the finger ellipse center X ccordinate.
-          * @return the finger ellipse center X ccordinate
-          */
-        float getEllipseX() {
-            return x_ellipse_center;
+         * Returns the acceleration of this TuioFinger.
+         * @return	the acceleration of this TuioFinger
+         */
+        float getAcceleration() {
+            return acceleration;
         }
 
         /**
-          * Return the finger ellipse center Y ccordinate.
-          * @return the finger ellipse center Y ccordinate
-          */
-        float getEllipseY() {
-            return y_ellipse_center;
+         * Get the Type of this finger.
+         * @return the finger type
+         */
+        Type getFingerType() {
+            return type;
         }
-
-        /**
-          * Return the finger ellipse center major axis.
-          * @return the finger ellipse center major axis
-          */
-        float getEllipseMajor() {
-            return ellipse_major_axis;
-        }
-
-        /**
-          * Return the finger ellipse center minor axis.
-          * @return the finger ellipse center minor axis
-          */
-        float getEllipseMinor() {
-            return ellipse_minor_axis;
-        }
-
-        /**
-          * Return the finger ellipse inclination.
-          * @return the finger ellipse inclination
-          */
-        float getEllipseInclination() {
-            return ellipse_inclination;
-        }
-
 
     protected:
         /**
@@ -202,11 +164,8 @@ namespace TUIO {
         int finger_id;
         float x_speed;
         float y_speed;
-        float x_ellipse_center;
-        float y_ellipse_center;
-        float ellipse_minor_axis;
-        float ellipse_major_axis;
-        float ellipse_inclination;
+        float acceleration;
+        Type type;
     };
 }
 #endif
