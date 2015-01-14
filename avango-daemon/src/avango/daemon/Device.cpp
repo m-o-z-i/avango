@@ -59,12 +59,20 @@ av::daemon::Device::addStation(int station_number, Station* station)
   mStations.insert(NumStationMap::value_type(station_number, station));
 }
 
+void
+av::daemon::Device::addHand(int hand_number, Hand* hand)
+{
+  mHands.insert(NumHandMap::value_type(hand_number, hand));
+}
+
+
 bool
 av::daemon::Device::startUp()
 {
   if(mRunning) return false;
 
   if(mStations.empty()) throw std::runtime_error("No station attached to this device.");
+  if(mHands.empty()) throw std::runtime_error("No hand attached to this device.");
 
   startDevice();
   mKeepRunning = true;
@@ -108,6 +116,16 @@ av::daemon::Device::getStationName(int id)
 {
   NumStationMap::iterator found = mStations.find(id);
   if (found != mStations.end())
+    return found->second->getName();
+  else
+    return "";
+}
+
+/* virtual */ std::string
+av::daemon::Device::getHandName(int id)
+{
+  NumHandMap::iterator found = mHands.find(id);
+  if (found != mHands.end())
     return found->second->getName();
   else
     return "";

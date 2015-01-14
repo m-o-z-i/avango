@@ -30,6 +30,7 @@
 #include <boost/shared_ptr.hpp>
 #include <avango/Base.h>
 #include <avango/daemon/Station.h>
+#include <avango/daemon/Hand.h>
 
 #if BOOST_VERSION > 104000
 #include <boost/thread.hpp>
@@ -68,6 +69,7 @@ namespace av
     public:
 
       typedef std::map<int, Station*, std::less<int> > NumStationMap;
+      typedef std::map<int, Hand*, std::less<int> > NumHandMap;
       typedef std::map<std::string, std::string, std::less<std::string> > StringStringMap;
 
       /**
@@ -80,6 +82,11 @@ namespace av
        * entities which are communicated to interested processes via shared memory.
        */
       virtual void addStation(int station_number, Station* station);
+
+      /**
+       * Add a Hand to this device identified by a hand number.
+       */
+      virtual void addHand(int hand_number, Hand* hand);
 
       /**
        * Device specific parameters can be passed via this method in a generic way. The HIDInput
@@ -103,6 +110,11 @@ namespace av
        * Returns the name of a station by a given ID, if not exists an empty string is returned.
        */
       virtual std::string getStationName(int id);
+
+      /**
+       * Returns the name of a hand by a given ID, if not exists an empty string is returned.
+       */
+      virtual std::string getHandName(int id);
 
       /**
        * Starts up the device. First the features are queried and evaluated. Then a separate
@@ -157,6 +169,11 @@ namespace av
        * A map of stations of this device.
        */
       NumStationMap mStations;
+
+      /**
+       * A map of hands of this device.
+       */
+      NumHandMap mHands;
 
       /**
        * A map of features of this device.

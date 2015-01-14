@@ -398,6 +398,7 @@ av::daemon::HIDInput::stopDevice()
   }
 }
 
+// STATION
 /* virtual */ void
 av::daemon::HIDInput::addStation(int station_number, Station* station)
 {
@@ -422,6 +423,30 @@ av::daemon::HIDInput::getFirstStation()
     return "";
 }
 
+// HAND
+/* virtual */ void
+av::daemon::HIDInput::addHand(int hand_number, Hand* hand)
+{
+  // add hand normally
+  Device::addHand(hand_number, hand);
+
+  // create mapping lookups for hand
+  mStationHIDMappingLookup.insert(StationHIDMappingLookup::value_type(hand_number, mDefaultHIDMapping));
+  mStationHIDLEDMappingLookup.insert(StationHIDLEDMappingLookup::value_type(hand_number, mDefaultHIDLEDMapping));
+}
+
+/* virtual */
+std::string
+av::daemon::HIDInput::getFirstHand()
+{
+  if (mHands.size() > 0)
+    return mHands.begin()->second->getName();
+  else
+    return "";
+}
+
+
+// Features
 /* virtual */ void
 av::daemon::HIDInput::configureFeature(const std::string& feature, const std::string& value)
 {

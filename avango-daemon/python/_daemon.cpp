@@ -27,6 +27,7 @@
 #include <avango/daemon/Config.h>
 #include <avango/daemon/DeviceDaemon.h>
 #include <avango/daemon/DeviceSensor.h>
+#include <avango/daemon/HandSensor.h>
 #include <avango/daemon/DeviceService.h>
 #include <avango/daemon/DeviceActuator.h>
 #include <avango/daemon/DTrack.h>
@@ -34,6 +35,7 @@
 #include <avango/daemon/TUIOInput.h>
 #include <avango/daemon/Init.h>
 #include <avango/daemon/StationSegment.h>
+#include <avango/daemon/HandSegment.h>
 
 #ifndef WIN32
 #  include <avango/daemon/WacomTablet.h>
@@ -70,6 +72,7 @@ namespace boost
 namespace
 {
   boost::shared_ptr<av::daemon::StationSegment> mStationSegment(new av::daemon::StationSegment());
+  boost::shared_ptr<av::daemon::HandSegment> mHandSegment(new av::daemon::HandSegment());
 
   bool
   doesTypeExist(std::string name)
@@ -84,6 +87,15 @@ namespace
       throw std::runtime_error("No StationSegment available.");
 
     self->addStation(number, mStationSegment->getStation(name));
+  }
+
+  void
+  addHand(av::daemon::Device* self, int number, std::string name)
+  {
+    if (!mHandSegment)
+      throw std::runtime_error("No StationSegment available.");
+
+    self->addHand(number, mHandSegment->getHand(name));
   }
 
   // wrapper for specialized queryFeature calls, required by .add_property
@@ -127,7 +139,7 @@ namespace
       st->setLED(i, value);
   }
 
-  // wrapper for mappings
+  // wrapper for station mappings
   void
   mapToStationButton(av::daemon::HIDInput* self, int number, std::string event)
   {
@@ -144,6 +156,14 @@ namespace
   mapToStationLED(av::daemon::HIDInput* self, int number, std::string event)
   {
     std::string feature = self->getFirstStation() + "::STATION_LED::" + boost::lexical_cast<std::string>(number);
+    self->configureFeature(feature, event);
+  }
+
+  // wrapper for hand mappings
+  void
+  mapToHandValue(av::daemon::HIDInput* self, int number, std::string event)
+  {
+    std::string feature = self->getFirstHand() + "::STATION_VALUE::" + boost::lexical_cast<std::string>(number);
     self->configureFeature(feature, event);
   }
 
@@ -193,6 +213,13 @@ BOOST_PYTHON_MODULE(_daemon)
   class_<av::daemon::Station, av::Link<av::daemon::Station>, bases<av::Base>, boost::noncopyable >("_DeviceStation",
     "An Avango Daemon station", no_init);
 
+  // base classes (this classes cannot be instanciated from Python)
+  class_<av::daemon::Device, av::Link<av::daemon::Device>, bases<av::Base>, boost::noncopyable >("_Device",
+    "Avango Daemon base class for devices", no_init)
+    .def("add_hand", &::addHand)
+    ;
+  class_<av::daemon::Hand, av::Link<av::daemon::Hand>, bases<av::Base>, boost::noncopyable >("_DeviceHand",
+    "An Avango Daemon hand", no_init);
 
   // Avango NG device: HIDInput
   class_<av::daemon::HIDInput, av::Link<av::daemon::HIDInput>, bases<av::daemon::Device>, boost::noncopyable >("_HIDHelper",
@@ -205,6 +232,7 @@ BOOST_PYTHON_MODULE(_daemon)
     .def("map_to_station_button", &::mapToStationButton)
     .def("map_to_station_value", &::mapToStationValue)
     .def("map_to_station_led", &::mapToStationLED)
+    .def("map_to_hand_value", &::mapToHandValue)
     .def("set_led", &::setLED)
     .def("set_leds", &::setAllLEDs)
     ;

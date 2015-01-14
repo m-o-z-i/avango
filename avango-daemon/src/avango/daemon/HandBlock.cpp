@@ -23,67 +23,52 @@
 *                                                                        *
 \************************************************************************/
 
-#include <avango/daemon/Init.h>
+#include <avango/daemon/HandBlock.h>
 
 #include <avango/Logger.h>
-
-#include <avango/daemon/Config.h>
-#include <avango/daemon/Device.h>
-#include <avango/daemon/DeviceActuator.h>
-#include <avango/daemon/DeviceDaemon.h>
-#include <avango/daemon/DeviceSensor.h>
-#include <avango/daemon/HandSensor.h>
-#include <avango/daemon/DeviceService.h>
-#include <avango/daemon/DTrack.h>
-#ifdef OCULUS_SUPPORT
-#include <avango/daemon/Oculus.h>
-#endif
-#include <avango/daemon/HIDInput.h>
-#include <avango/daemon/WacomTablet.h>
-#include <avango/daemon/Wiimote.h>
-#include <avango/daemon/WiimoteActuator.h>
-#include <avango/daemon/TUIOInput.h>
-
-#ifdef VRPN_SUPPORT
-#include <avango/daemon/VRPNClient.h>
-#endif
+#include <cstring>
 
 namespace
 {
-  av::Logger& logger(av::getLogger("av::daemon::Init"));
+  av::Logger& logger(av::getLogger("av::daemon::HandBlock"));
 }
 
-AV_TYPED_DEFINE_ABSTRACT(av::daemon::Init);
+av::daemon::HandBlock::HandBlock()
+  : mNumHands(0),
+    mMutex()
+{}
 
-/* static */ void
-av::daemon::Init::initClass()
+av::daemon::HandBlock::~HandBlock()
+{}
+
+av::daemon::Hand*
+av::daemon::HandBlock::getHand(const char* name)
 {
-  if (!isTypeInitialized())
+  // very simple and inefficient for now
+  Hand* hand = 0;
+
+  boost::mutex::scoped_lock lock(mMutex);
+
+  int i;
+
+  for (i=0; i<mNumHands; i++)
   {
-    av::daemon::Device::initClass();
-    av::daemon::DeviceActuator::initClass();
-    av::daemon::DeviceDaemon::initClass();
-    av::daemon::DeviceSensor::initClass();
-    av::daemon::HandSensor::initClass();
-    av::daemon::DeviceService::initClass();
-    av::daemon::DTrack::initClass();
-    av::daemon::TUIOInput::initClass();
+    if (std::strcmp(name, mHands[i].getName()) == 0)
+    {
+      hand = &mHands[i];
+      LOG_TRACE(logger) << "getHand(): referenced hand '" << name << "', " << hand;
 
-    av::daemon::HIDInput::initClass();
-#ifndef WIN32
-    av::daemon::WacomTablet::initClass();
-    av::daemon::Wiimote::initClass();
-    av::daemon::WiimoteActuator::initClass();
-#endif
-
-#ifdef VRPN_SUPPORT
-    av::daemon::VRPNClient::initClass();
-#endif
-
-#ifdef OCULUS_SUPPORT
-    av::daemon::Oculus::initClass();
-#endif
-
-    AV_TYPED_INIT_ABSTRACT(av::Type::badType(), "av::daemon::Init", true);
+      break;
+    }
   }
+
+  if (!hand && i < sMaxHandNum) {
+    hand = new (&mHands[i]) Hand;
+    hand->setName(name);
+    logger.debug() << "getHand(): created hand '" << name << "', " << hand;
+
+    mNumHands++;
+  }
+
+  return hand;
 }

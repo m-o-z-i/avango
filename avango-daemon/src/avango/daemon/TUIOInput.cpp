@@ -82,16 +82,17 @@ av::daemon::TUIOInput::readLoop()
 {
   while (mKeepRunning)
   {
-    for (auto const& station : mStations) {
+    for (auto const& station : mHands) {
         if (nullptr == station.second) {
             // we exceeded the maximum number of stations
             break;
         }
 
         std::string name = station.second->getName();
+        //std::cout << "AVANGO: Station Name: " << name << "  ; Anz: " << station.first << "  ; mStation: " << mStations.size() << std::endl;
 
         if (boost::algorithm::ends_with(name, "#cursor") || name.find("#") == std::string::npos) {
-            int sessionID = getSessionIDForStation(station, 0, mTUIOInputListener->cursors);
+            int sessionID = getSessionIDForHand(station, 0, mTUIOInputListener->cursors);
             auto cursor(mTUIOInputListener->cursors.find(sessionID));
             if (cursor != mTUIOInputListener->cursors.end())
             {
@@ -116,7 +117,7 @@ av::daemon::TUIOInput::readLoop()
                 station.second->setValue(8, -1.f);
             }
         } else if (boost::algorithm::ends_with(name, "#finger")) {
-            int sessionID = getSessionIDForStation(station, 1, mTUIOInputListener->fingers);
+            int sessionID = getSessionIDForHand(station, 1, mTUIOInputListener->fingers);
             auto finger(mTUIOInputListener->fingers.find(sessionID));
             if (finger != mTUIOInputListener->fingers.end()) {
                 station.second->setValue(0, finger->second.session_id);
@@ -138,11 +139,11 @@ av::daemon::TUIOInput::readLoop()
 
             }
         } else if (boost::algorithm::ends_with(name, "#hand")) {
-            int sessionID = getSessionIDForStation(station, 2, mTUIOInputListener->hands);
+            int sessionID = getSessionIDForHand(station, 2, mTUIOInputListener->hands);
             auto hand(mTUIOInputListener->hands.find(sessionID));
             if (hand != mTUIOInputListener->hands.end()) {
                 station.second->setValue(0,  hand->second.session_id);
-                //std::cout << "AVANGO: hand " << hand->second.session_id << "  pos = " << hand->second.x_pos << " arm: " << hand->second.x_arm_center << "  hand_class " << hand->second.hand_class << std::endl;
+                std::cout << "AVANGO: hand " << hand->second.session_id << "  pos = " << hand->second.x_pos << " arm: " << hand->second.x_arm_center << "  hand_class " << hand->second.hand_class << std::endl;
 
                 station.second->setValue(1,  hand->second.x_pos);
                 station.second->setValue(2,  hand->second.y_pos);

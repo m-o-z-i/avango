@@ -23,67 +23,75 @@
 *                                                                        *
 \************************************************************************/
 
-#include <avango/daemon/Init.h>
 
-#include <avango/Logger.h>
+#if !defined(AV_DAEMON_HANDBLOCK_H)
+#define AV_DAEMON_HANDBLOCK_H
 
-#include <avango/daemon/Config.h>
-#include <avango/daemon/Device.h>
-#include <avango/daemon/DeviceActuator.h>
-#include <avango/daemon/DeviceDaemon.h>
-#include <avango/daemon/DeviceSensor.h>
-#include <avango/daemon/HandSensor.h>
-#include <avango/daemon/DeviceService.h>
-#include <avango/daemon/DTrack.h>
-#ifdef OCULUS_SUPPORT
-#include <avango/daemon/Oculus.h>
-#endif
-#include <avango/daemon/HIDInput.h>
-#include <avango/daemon/WacomTablet.h>
-#include <avango/daemon/Wiimote.h>
-#include <avango/daemon/WiimoteActuator.h>
-#include <avango/daemon/TUIOInput.h>
+/**
+ * \file
+ * \ingroup av_daemon
+ */
 
-#ifdef VRPN_SUPPORT
-#include <avango/daemon/VRPNClient.h>
-#endif
+#include <boost/thread/mutex.hpp>
+#include <avango/daemon/Hand.h>
+#include <avango/daemon/windows_specific_daemon.h>
 
-namespace
+namespace av
 {
-  av::Logger& logger(av::getLogger("av::daemon::Init"));
-}
-
-AV_TYPED_DEFINE_ABSTRACT(av::daemon::Init);
-
-/* static */ void
-av::daemon::Init::initClass()
-{
-  if (!isTypeInitialized())
+  namespace daemon
   {
-    av::daemon::Device::initClass();
-    av::daemon::DeviceActuator::initClass();
-    av::daemon::DeviceDaemon::initClass();
-    av::daemon::DeviceSensor::initClass();
-    av::daemon::HandSensor::initClass();
-    av::daemon::DeviceService::initClass();
-    av::daemon::DTrack::initClass();
-    av::daemon::TUIOInput::initClass();
+    /**
+     * Helper class for getting a hand from av-daemon (used by av::daemon::HandSegment).
+     *
+     * \ingroup av_daemon
+     */
+    class AV_DAEMON_DLL HandBlock {
 
-    av::daemon::HIDInput::initClass();
-#ifndef WIN32
-    av::daemon::WacomTablet::initClass();
-    av::daemon::Wiimote::initClass();
-    av::daemon::WiimoteActuator::initClass();
-#endif
+    public:
 
-#ifdef VRPN_SUPPORT
-    av::daemon::VRPNClient::initClass();
-#endif
+      /**
+       * Constructor
+       */
+      HandBlock();
 
-#ifdef OCULUS_SUPPORT
-    av::daemon::Oculus::initClass();
-#endif
+      /**
+       * Get a hand by given name.
+       */
+      Hand* getHand(const char* name);
 
-    AV_TYPED_INIT_ABSTRACT(av::Type::badType(), "av::daemon::Init", true);
+      /**
+       * Destructor made protected to prevent allocation on stack.
+       */
+      virtual ~HandBlock();
+
+    private:
+
+      /**
+       * Builtin declaration here; definition is in impl. unit w/o value!
+       * needed because of the array size for mStations!!!
+       */
+      static const int sMaxHandNum = 64;
+
+      /**
+       * Retain static memory layout since it gets put into a shared
+       * memory segment not autogrowable!
+       */
+      Hand          mHands[sMaxHandNum];
+      int           mNumHands;
+      boost::mutex  mMutex;
+
+      /**
+       * Made private to prevent copying construction.
+       */
+      HandBlock(const HandBlock&);
+
+      /**
+       * Made private to prevent assignment.
+       */
+      const HandBlock& operator=(const HandBlock&);
+
+    };
   }
 }
+
+#endif // #if !defined(AV_DAEMON_HANDBLOCK_H)

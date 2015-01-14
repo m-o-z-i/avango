@@ -559,7 +559,7 @@ void TuioClient::ProcessMessage( const ReceivedMessage& msg, const IpEndpointNam
                 aliveHandList.clear();
                 while(!args.Eos()) {
                     args >> s_id;
-                    std::cout<< "AVANGO:  alive handID: " << s_id << std::endl;
+                    //std::cout<< "AVANGO:  alive handID: " << s_id << std::endl;
 
                     aliveHandList.push_back((long)s_id);
                 }
@@ -592,7 +592,7 @@ void TuioClient::ProcessMessage( const ReceivedMessage& msg, const IpEndpointNam
                     handList.push_back(addHand);
                     for (std::list<TuioListener*>::iterator listener=listenerList.begin(); listener != listenerList.end(); listener++){
                         (*listener)->addTuioHand(addHand);
-                        std::cout<< "AVANGO: Add hand: " << addHand->getSessionID() << std::endl;
+                        //std::cout<< "AVANGO: Add hand: " << addHand->getSessionID() << std::endl;
                     }
                 } else {
                     (*thand)->update((float) xPos, (float) yPos,
@@ -601,7 +601,7 @@ void TuioClient::ProcessMessage( const ReceivedMessage& msg, const IpEndpointNam
                                      (float) arm_x, (float) arm_x, (float) arm_minor, (float) arm_major, (float) arm_incl);
                     for (std::list<TuioListener*>::iterator listener=listenerList.begin(); listener != listenerList.end(); listener++){
                         (*listener)->updateTuioHand(*thand);
-                        std::cout<< "AVANGO: Update hand: " << (*thand)->getSessionID() << std::endl;
+                        //std::cout<< "AVANGO: Update hand: " << (*thand)->getSessionID() << std::endl;
                     }
                 }
 

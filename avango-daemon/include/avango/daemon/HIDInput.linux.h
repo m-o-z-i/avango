@@ -88,6 +88,16 @@ namespace av
        */
       virtual std::string getFirstStation();
 
+      /**
+       * Overrides addHand of av::daemon::Device
+       */
+      virtual void addHand(int hand_number, Hand* hand);
+
+      /**
+       * Returns the name of the first hand as string. Used for the Python binding.
+       */
+      virtual std::string getFirstHand();
+
     protected:
 
       /**
