@@ -183,7 +183,7 @@ namespace av
 
       /* virtual */ void evaluate();
 
-    private:
+    protected:
 
       /**
        * Update matrix if changed.

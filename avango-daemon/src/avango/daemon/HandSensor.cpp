@@ -15,6 +15,8 @@ AV_FC_DEFINE(av::daemon::HandSensor);
 
 av::daemon::HandSensor::HandSensor()
 {
+  AV_FC_ADD_FIELD(mHandPos,                  ::gua::math::vec2());
+
   alwaysEvaluate(true);
 }
 
@@ -36,6 +38,17 @@ av::daemon::HandSensor::evaluate()
 {
   if (DeviceService.getValue().isValid() && !(Station.getValue().empty()) )
   {
-    //update hand values
+    updateHandPos();
   }
+}
+
+void
+av::daemon::HandSensor::updateHandPos()
+{
+    float x = getValue(1);
+    float y = getValue(2);
+    ::gua::math::vec2 pos(x, y);
+    if(mHandPos.getValue() != pos){
+        mHandPos.setValue(pos);
+    }
 }

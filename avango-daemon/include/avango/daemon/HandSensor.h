@@ -40,11 +40,13 @@ namespace av
 
       HandSensor();
       virtual ~HandSensor();
+      av::gua::SFVec2       mHandPos;
 
       /* virtual */ void evaluate();
 
     private:
 
+      void updateHandPos();
     };
   }
 }
