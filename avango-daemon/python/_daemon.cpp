@@ -35,6 +35,8 @@
 #include <avango/daemon/Init.h>
 #include <avango/daemon/StationSegment.h>
 
+#include <avango/daemon/HandSensor.h>
+
 #ifndef WIN32
 #  include <avango/daemon/WacomTablet.h>
 #  include <avango/daemon/Wiimote.h>
@@ -171,6 +173,8 @@ BOOST_PYTHON_MODULE(_daemon)
   // Avango NG application instances
   class_<av::daemon::DeviceSensor, av::Link<av::daemon::DeviceSensor>, bases<av::FieldContainer>, boost::noncopyable >("DeviceSensor", "docstring", no_init);
   class_<av::daemon::DeviceActuator, av::Link<av::daemon::DeviceActuator>, bases<av::FieldContainer>, boost::noncopyable >("_DeviceActuator", "docstring", no_init);
+  // Hand Sensor
+  class_<av::daemon::HandSensor, av::Link<av::daemon::HandSensor>, bases<av::daemon::DeviceSensor>, boost::noncopyable >("HandSensor", "docstring", no_init);
 
 #ifndef WIN32
   class_<av::daemon::WiimoteActuator, av::Link<av::daemon::WiimoteActuator>, bases<av::daemon::DeviceActuator>, boost::noncopyable >("WiimoteActuator", "docstring", no_init)
