@@ -19,6 +19,7 @@ file(GLOB AVANGO_DAEMON_SRC RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
     src/avango/daemon/DeviceActuator.cpp
     src/avango/daemon/DeviceDaemon.cpp
     src/avango/daemon/DeviceSensor.cpp
+    src/avango/daemon/HandSensor.cpp
     src/avango/daemon/DeviceService.cpp
     src/avango/daemon/DTrack.cpp
     src/avango/daemon/Init.cpp
@@ -49,6 +50,7 @@ file(GLOB AVANGO_DAEMON_SRC RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
     include/avango/daemon/DeviceActuator.h
     include/avango/daemon/DeviceDaemon.h
     include/avango/daemon/DeviceSensor.h
+    include/avango/daemon/HandSensor.h
     include/avango/daemon/DeviceService.h
     include/avango/daemon/DTrack.h
     include/avango/daemon/Doxygen.h

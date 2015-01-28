@@ -32,7 +32,9 @@
 #include <avango/daemon/DeviceActuator.h>
 #include <avango/daemon/DeviceDaemon.h>
 #include <avango/daemon/DeviceSensor.h>
+#include <avango/daemon/HandSensor.h>
 #include <avango/daemon/DeviceService.h>
+
 #include <avango/daemon/DTrack.h>
 #ifdef OCULUS_SUPPORT
 #include <avango/daemon/Oculus.h>
@@ -66,6 +68,7 @@ av::daemon::Init::initClass()
     av::daemon::DeviceService::initClass();
     av::daemon::DTrack::initClass();
     av::daemon::TUIOInput::initClass();
+    av::daemon::HandSensor::initClass();
 
 
     av::daemon::HIDInput::initClass();
