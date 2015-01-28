@@ -23,8 +23,6 @@ file(GLOB AVANGO_DAEMON_SRC RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
     src/avango/daemon/DTrack.cpp
     src/avango/daemon/Init.cpp
     src/avango/daemon/LinuxEvent.cpp
-    src/avango/daemon/Hand.cpp
-    src/avango/daemon/HandSensor.cpp
     src/avango/daemon/Station.cpp
     src/avango/daemon/StationBlock.cpp
     src/avango/daemon/StationSegment.cpp
@@ -60,8 +58,6 @@ file(GLOB AVANGO_DAEMON_SRC RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
     include/avango/daemon/LinuxEvent.h
     include/avango/daemon/LinuxInput.win.h
     include/avango/daemon/SharedMemorySegment.h
-    include/avango/daemon/Hand.h
-    include/avango/daemon/HandSensor.h
     include/avango/daemon/Station.h
     include/avango/daemon/StationBlock.h
     include/avango/daemon/StationSegment.h
