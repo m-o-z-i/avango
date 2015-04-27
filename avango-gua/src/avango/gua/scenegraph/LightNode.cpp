@@ -57,6 +57,10 @@ av::gua::LightNode::LightNode(std::shared_ptr< ::gua::node::LightNode> guanode)
                           boost::bind(&LightNode::getShadowMapSizeCB, this, _1),
                           boost::bind(&LightNode::setShadowMapSizeCB, this, _1));
 
+    AV_FC_ADD_ADAPTOR_FIELD(ShadowMaxDistance,
+                          boost::bind(&LightNode::getShadowMaxDistanceCB, this, _1),
+                          boost::bind(&LightNode::setShadowMaxDistanceCB, this, _1));
+
     AV_FC_ADD_ADAPTOR_FIELD(ShadowCascadedSplits,
                           boost::bind(&LightNode::getShadowCascadedSplitsCB, this, _1),
                           boost::bind(&LightNode::setShadowCascadedSplitsCB, this, _1));
@@ -64,6 +68,10 @@ av::gua::LightNode::LightNode(std::shared_ptr< ::gua::node::LightNode> guanode)
     AV_FC_ADD_ADAPTOR_FIELD(ShadowNearClippingInSunDirection,
                           boost::bind(&LightNode::getShadowNearClippingInSunDirectionCB, this, _1),
                           boost::bind(&LightNode::setShadowNearClippingInSunDirectionCB, this, _1));
+
+    AV_FC_ADD_ADAPTOR_FIELD(ShadowFarClippingInSunDirection,
+                          boost::bind(&LightNode::getShadowFarClippingInSunDirectionCB, this, _1),
+                          boost::bind(&LightNode::setShadowFarClippingInSunDirectionCB, this, _1));
 }
 
 void
@@ -221,6 +229,18 @@ av::gua::LightNode::setShadowMapSizeCB(const SFUInt::SetValueEvent& event)
 }
 
 void
+av::gua::LightNode::getShadowMaxDistanceCB(const SFFloat::GetValueEvent& event)
+{
+    *(event.getValuePtr()) = m_guaNode->data.max_shadow_dist();
+}
+
+void
+av::gua::LightNode::setShadowMaxDistanceCB(const SFFloat::SetValueEvent& event)
+{
+    m_guaNode->data.max_shadow_dist() = event.getValue();
+}
+
+void
 av::gua::LightNode::getShadowCascadedSplitsCB(const MFFloat::GetValueEvent& event)
 {
     *(event.getValuePtr()) = m_guaNode->data.shadow_cascaded_splits();
@@ -242,4 +262,16 @@ void
 av::gua::LightNode::setShadowNearClippingInSunDirectionCB(const SFFloat::SetValueEvent& event)
 {
     m_guaNode->data.shadow_near_clipping_in_sun_direction() = event.getValue();
+}
+
+void
+av::gua::LightNode::getShadowFarClippingInSunDirectionCB(const SFFloat::GetValueEvent& event)
+{
+    *(event.getValuePtr()) = m_guaNode->data.shadow_far_clipping_in_sun_direction();
+}
+
+void
+av::gua::LightNode::setShadowFarClippingInSunDirectionCB(const SFFloat::SetValueEvent& event)
+{
+    m_guaNode->data.shadow_far_clipping_in_sun_direction() = event.getValue();
 }

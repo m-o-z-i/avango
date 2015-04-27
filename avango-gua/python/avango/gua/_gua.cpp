@@ -19,7 +19,6 @@
 #include "scenegraph/LODNode.hpp"
 #include "scenegraph/TriMeshNode.hpp"
 #include "scenegraph/Video3DNode.hpp"
-#include "scenegraph/VolumeNode.hpp"
 #if defined(AVANGO_PBR_SUPPORT)
 #include "scenegraph/PBRNode.hpp"
 #include "scenegraph/PLODNode.hpp"
@@ -63,9 +62,11 @@
 #include "renderer/GlfwWindow.hpp"
 #include "renderer/MaterialShaderMethod.hpp"
 #include "renderer/MaterialShaderDescription.hpp"
+#include "renderer/PBSMaterialFactory.hpp"
 #include "renderer/Material.hpp"
 #include "renderer/PipelineDescription.hpp"
 #include "renderer/PipelinePassDescription.hpp"
+#include "renderer/StencilPassDescription.hpp"
 #include "renderer/TriMeshPassDescription.hpp"
 #include "renderer/TexturedQuadPassDescription.hpp"
 #include "renderer/DebugViewPassDescription.hpp"
@@ -82,7 +83,6 @@
 #include "renderer/Databases.hpp"
 #include "renderer/TriMeshLoader.hpp"
 #include "renderer/Video3DLoader.hpp"
-#include "renderer/VolumeLoader.hpp"
 #if defined(AVANGO_PBR_SUPPORT)
 #include "renderer/PBRLoader.hpp"
 #include "renderer/PLODLoader.hpp"
@@ -147,7 +147,6 @@ BOOST_PYTHON_MODULE(_gua)
 #endif
     init_TriMeshNode();
     // init_Video3DNode();
-    // init_VolumeNode();
 #if defined(AVANGO_PBR_SUPPORT)
     init_PLODNode();
     // init_PBRNode();
@@ -190,9 +189,11 @@ BOOST_PYTHON_MODULE(_gua)
     init_GlfwWindow();
     init_MaterialShaderMethod();
     init_MaterialShaderDescription();
+    init_PBSMaterialFactory();
     init_Material();
     init_PipelineDescription();
     init_PipelinePassDescription();
+    init_StencilPassDescription();
     init_TriMeshPassDescription();
     init_TexturedQuadPassDescription();
     init_DebugViewPassDescription();
@@ -209,7 +210,6 @@ BOOST_PYTHON_MODULE(_gua)
     init_Databases();
     init_TriMeshLoader();
     // init_Video3DLoader();
-    // init_VolumeLoader();
 #if defined(AVANGO_PBR_SUPPORT)
     init_PLODLoader();
     init_PLODPassDescription();

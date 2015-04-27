@@ -58,10 +58,11 @@ namespace av
       SFBool  EnableSpecularShading;
       SFFloat ShadowOffset;
       SFUInt  ShadowMapSize;
+      SFFloat ShadowMaxDistance;
 
-      // new
       MFFloat ShadowCascadedSplits;
       SFFloat ShadowNearClippingInSunDirection;
+      SFFloat ShadowFarClippingInSunDirection;
 
       /**
        * Get the wrapped ::gua::LightNode.
@@ -103,11 +104,17 @@ namespace av
       virtual void getShadowMapSizeCB(const SFUInt::GetValueEvent& event);
       virtual void setShadowMapSizeCB(const SFUInt::SetValueEvent& event);
 
+      virtual void getShadowMaxDistanceCB(const SFFloat::GetValueEvent& event);
+      virtual void setShadowMaxDistanceCB(const SFFloat::SetValueEvent& event);
+      
       virtual void getShadowCascadedSplitsCB(const MFFloat::GetValueEvent& event);
       virtual void setShadowCascadedSplitsCB(const MFFloat::SetValueEvent& event);
 
       virtual void getShadowNearClippingInSunDirectionCB(const SFFloat::GetValueEvent& event);
       virtual void setShadowNearClippingInSunDirectionCB(const SFFloat::SetValueEvent& event);
+
+      virtual void getShadowFarClippingInSunDirectionCB(const SFFloat::GetValueEvent& event);
+      virtual void setShadowFarClippingInSunDirectionCB(const SFFloat::SetValueEvent& event);
 
     private:
 
