@@ -65,13 +65,16 @@ namespace av
       SFFloat  FogStart;
       SFFloat  FogEnd;
 
+      SFFloat  VignetteSoftness;
+      SFFloat  VignetteCoverage;
+      SFVec4   VignetteColor;
+
       SFUInt   ToneMappingMode;
       SFFloat  Exposure;
 
       SFColor  EnvironmentLightingColor;
       SFUInt   EnvironmentLightingMode;
-      SFString EnvironmentLightingSphereMap;
-      // MFString EnvironmentLightingCubeMap;
+      SFString EnvironmentLightingTexture;
       SFFloat  HorizonFade;
 
       SFBool   EnableSSAO;
@@ -105,6 +108,15 @@ namespace av
       virtual void getFogEndCB(const SFFloat::GetValueEvent& event);
       virtual void setFogEndCB(const SFFloat::SetValueEvent& event);
 
+      virtual void getVignetteSoftnessCB(const SFFloat::GetValueEvent& event);
+      virtual void setVignetteSoftnessCB(const SFFloat::SetValueEvent& event);
+
+      virtual void getVignetteCoverageCB(const SFFloat::GetValueEvent& event);
+      virtual void setVignetteCoverageCB(const SFFloat::SetValueEvent& event);
+
+      virtual void getVignetteColorCB(const SFVec4::GetValueEvent& event);
+      virtual void setVignetteColorCB(const SFVec4::SetValueEvent& event);
+
       virtual void getToneMappingModeCB(const SFUInt::GetValueEvent& event);
       virtual void setToneMappingModeCB(const SFUInt::SetValueEvent& event);
 
@@ -132,8 +144,8 @@ namespace av
       virtual void getEnvironmentLightingModeCB(const SFUInt::GetValueEvent& event);
       virtual void setEnvironmentLightingModeCB(const SFUInt::SetValueEvent& event);
 
-      virtual void getEnvironmentLightingSphereMapCB(const SFString::GetValueEvent& event);
-      virtual void setEnvironmentLightingSphereMapCB(const SFString::SetValueEvent& event);
+      virtual void getEnvironmentLightingTextureCB(const SFString::GetValueEvent& event);
+      virtual void setEnvironmentLightingTextureCB(const SFString::SetValueEvent& event);
 
       virtual void getHorizonFadeCB(const SFFloat::GetValueEvent& event);
       virtual void setHorizonFadeCB(const SFFloat::SetValueEvent& event);

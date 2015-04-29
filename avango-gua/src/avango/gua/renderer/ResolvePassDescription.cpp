@@ -40,6 +40,18 @@ av::gua::ResolvePassDescription::ResolvePassDescription(
                     boost::bind(&ResolvePassDescription::getFogStartCB, this, _1),
                     boost::bind(&ResolvePassDescription::setFogStartCB, this, _1));
 
+  AV_FC_ADD_ADAPTOR_FIELD(VignetteSoftness,
+                    boost::bind(&ResolvePassDescription::getVignetteSoftnessCB, this, _1),
+                    boost::bind(&ResolvePassDescription::setVignetteSoftnessCB, this, _1));
+
+  AV_FC_ADD_ADAPTOR_FIELD(VignetteCoverage,
+                    boost::bind(&ResolvePassDescription::getVignetteCoverageCB, this, _1),
+                    boost::bind(&ResolvePassDescription::setVignetteCoverageCB, this, _1));
+
+  AV_FC_ADD_ADAPTOR_FIELD(VignetteColor,
+                    boost::bind(&ResolvePassDescription::getVignetteColorCB, this, _1),
+                    boost::bind(&ResolvePassDescription::setVignetteColorCB, this, _1));
+
   AV_FC_ADD_ADAPTOR_FIELD(FogEnd,
                     boost::bind(&ResolvePassDescription::getFogEndCB, this, _1),
                     boost::bind(&ResolvePassDescription::setFogEndCB, this, _1));
@@ -60,9 +72,9 @@ av::gua::ResolvePassDescription::ResolvePassDescription(
                     boost::bind(&ResolvePassDescription::getEnvironmentLightingModeCB, this, _1),
                     boost::bind(&ResolvePassDescription::setEnvironmentLightingModeCB, this, _1));
 
-  AV_FC_ADD_ADAPTOR_FIELD(EnvironmentLightingSphereMap,
-                    boost::bind(&ResolvePassDescription::getEnvironmentLightingSphereMapCB, this, _1),
-                    boost::bind(&ResolvePassDescription::setEnvironmentLightingSphereMapCB, this, _1));
+  AV_FC_ADD_ADAPTOR_FIELD(EnvironmentLightingTexture,
+                    boost::bind(&ResolvePassDescription::getEnvironmentLightingTextureCB, this, _1),
+                    boost::bind(&ResolvePassDescription::setEnvironmentLightingTextureCB, this, _1));
 
   AV_FC_ADD_ADAPTOR_FIELD(HorizonFade,
                     boost::bind(&ResolvePassDescription::getHorizonFadeCB, this, _1),
@@ -197,6 +209,42 @@ av::gua::ResolvePassDescription::setFogEndCB(const SFFloat::SetValueEvent& event
 }
 
 void
+av::gua::ResolvePassDescription::getVignetteSoftnessCB(const SFFloat::GetValueEvent& event)
+{
+  *(event.getValuePtr()) = m_guaResolvePassDescription->vignette_softness();
+}
+
+void
+av::gua::ResolvePassDescription::setVignetteSoftnessCB(const SFFloat::SetValueEvent& event)
+{
+  m_guaResolvePassDescription->vignette_softness(event.getValue());
+}
+
+void
+av::gua::ResolvePassDescription::getVignetteCoverageCB(const SFFloat::GetValueEvent& event)
+{
+  *(event.getValuePtr()) = m_guaResolvePassDescription->vignette_coverage();
+}
+
+void
+av::gua::ResolvePassDescription::setVignetteCoverageCB(const SFFloat::SetValueEvent& event)
+{
+  m_guaResolvePassDescription->vignette_coverage(event.getValue());
+}
+
+void
+av::gua::ResolvePassDescription::getVignetteColorCB(const SFVec4::GetValueEvent& event)
+{
+  *(event.getValuePtr()) = m_guaResolvePassDescription->vignette_color();
+}
+
+void
+av::gua::ResolvePassDescription::setVignetteColorCB(const SFVec4::SetValueEvent& event)
+{
+  m_guaResolvePassDescription->vignette_color(::gua::math::vec4f(event.getValue()));
+}
+
+void
 av::gua::ResolvePassDescription::getToneMappingModeCB(const SFUInt::GetValueEvent& event)
 {
   *(event.getValuePtr()) = static_cast<unsigned>(m_guaResolvePassDescription->tone_mapping_method());
@@ -251,15 +299,15 @@ av::gua::ResolvePassDescription::setEnvironmentLightingModeCB(const SFUInt::SetV
 }
 
 void
-av::gua::ResolvePassDescription::getEnvironmentLightingSphereMapCB(const SFString::GetValueEvent& event)
+av::gua::ResolvePassDescription::getEnvironmentLightingTextureCB(const SFString::GetValueEvent& event)
 {
-  *(event.getValuePtr()) = m_guaResolvePassDescription->environment_lighting_spheremap();
+  *(event.getValuePtr()) = m_guaResolvePassDescription->environment_lighting_texture();
 }
 
 void
-av::gua::ResolvePassDescription::setEnvironmentLightingSphereMapCB(const SFString::SetValueEvent& event)
+av::gua::ResolvePassDescription::setEnvironmentLightingTextureCB(const SFString::SetValueEvent& event)
 {
-  m_guaResolvePassDescription->environment_lighting_spheremap(event.getValue());
+  m_guaResolvePassDescription->environment_lighting_texture(event.getValue());
 }
 
 void
